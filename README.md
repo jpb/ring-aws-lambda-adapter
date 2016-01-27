@@ -18,7 +18,7 @@ See `example/` for a code example and Swagger definition.
 
    For example:
 
-   ```
+   ```Clojure
    (ns example.lambda
      (:require [ring-aws-lambda-adapter.core :refer [defhandler]]
                [ring.middleware.params :refer [wrap-params]]
@@ -41,7 +41,7 @@ See `example/` for a code example and Swagger definition.
                                          {})
    ```
 
-   ```
+   ```Bash
    $ lein uberjar
    $ aws lambda create-function \
        --region eu-west-1 \
@@ -61,34 +61,34 @@ See `example/` for a code example and Swagger definition.
      - Mapping Templates
        - Content-Type: `application/json`
 
-         ```
-         {
-           "stage" : "$context.stage",
-           "request-id" : "$context.requestId",
-           "api-id" : "$context.apiId",
-           "resource-path" : "$context.resourcePath",
-           "resource-id" : "$context.resourceId",
-           "path" : "$input.params().path",
-           "http-method" : "$context.httpMethod",
-           "source-ip" : "$context.identity.sourceIp",
-           "user-agent" : "$context.identity.userAgent",
-           "account-id" : "$context.identity.accountId",
-           "api-key" : "$context.identity.apiKey",
-           "caller" : "$context.identity.caller",
-           "user" : "$context.identity.user",
-           "user-arn" : "$context.identity.userArn",
-           "query-string": {
-             #foreach($querystring in $input.params().querystring.keySet())
-               "$querystring": "$util.escapeJavaScript($input.params().querystring.get($querystring))" #if($foreach.hasNext),#end
-             #end
-           },
-           "headers": {
-             #foreach($header in $input.params().header.keySet())
-               "$header": "$util.escapeJavaScript($input.params().header.get($header))" #if($foreach.hasNext),#end
-             #end
-           },
-           "body" : $input.json('$')
-         }
+         ```Javascript
+           {
+             "stage" : "$context.stage",
+             "request-id" : "$context.requestId",
+             "api-id" : "$context.apiId",
+             "resource-path" : "$context.resourcePath",
+             "resource-id" : "$context.resourceId",
+             "path" : "$input.params().path",
+             "http-method" : "$context.httpMethod",
+             "source-ip" : "$context.identity.sourceIp",
+             "user-agent" : "$context.identity.userAgent",
+             "account-id" : "$context.identity.accountId",
+             "api-key" : "$context.identity.apiKey",
+             "caller" : "$context.identity.caller",
+             "user" : "$context.identity.user",
+             "user-arn" : "$context.identity.userArn",
+             "query-string": {
+                #foreach($querystring in $input.params().querystring.keySet())
+                  "$querystring": "$util.escapeJavaScript($input.params().querystring.get($querystring))" #if($foreach.hasNext),#end
+                #end
+             },
+             "headers": {
+                #foreach($header in $input.params().header.keySet())
+                  "$header": "$util.escapeJavaScript($input.params().header.get($header))" #if($foreach.hasNext),#end
+                #end
+             },
+             "body" : $input.json('$')
+           }
          ```
 
    - Method Reponse
