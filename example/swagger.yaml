@@ -1,0 +1,205 @@
+---
+swagger: "2.0"
+info:
+  version: "2016-01-27T17:39:16Z"
+  title: "api-name"
+host: "0000000000.execute-api.region.amazonaws.com"
+basePath: "/stage-name"
+schemes:
+- "https"
+paths:
+  /:
+    get:
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers: {}
+        404:
+          description: "404 response"
+          headers: {}
+        500:
+          description: "500 response"
+          headers: {}
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "$input.json('$.body')"
+          .*"status":404.*:
+            statusCode: "404"
+            responseTemplates:
+              application/json: "{\"error\":\"Not Found\"}"
+          .+:
+            statusCode: "500"
+            responseTemplates:
+              application/json: "{\"error\":\"Unknown\"}"
+        requestTemplates:
+          application/json: "{\n  \"stage\" : \"$context.stage\",\n  \"request-id\"\
+            \ : \"$context.requestId\",\n  \"api-id\" : \"$context.apiId\",\n  \"\
+            resource-path\" : \"$context.resourcePath\",\n  \"resource-id\" : \"$context.resourceId\"\
+            ,\n  \"path\" : \"$input.params().path\",\n  \"http-method\" : \"$context.httpMethod\"\
+            ,\n  \"source-ip\" : \"$context.identity.sourceIp\",\n  \"user-agent\"\
+            \ : \"$context.identity.userAgent\",\n  \"account-id\" : \"$context.identity.accountId\"\
+            ,\n  \"api-key\" : \"$context.identity.apiKey\",\n  \"caller\" : \"$context.identity.caller\"\
+            ,\n  \"user\" : \"$context.identity.user\",\n  \"user-arn\" : \"$context.identity.userArn\"\
+            ,\n  \"query-string\": {\n    #foreach($querystring in $input.params().querystring.keySet())\n\
+            \      \"$querystring\": \"$util.escapeJavaScript($input.params().querystring.get($querystring))\"\
+            \ #if($foreach.hasNext),#end\n    #end\n  },\n  \"headers\": {\n    #foreach($header\
+            \ in $input.params().header.keySet())\n      \"$header\": \"$util.escapeJavaScript($input.params().header.get($header))\"\
+            \ #if($foreach.hasNext),#end\n    #end\n  },\n  \"body\" : $input.json('$')\n\
+            }"
+        uri: "arn:aws:apigateway:region:lambda:path/XXXX-XX-XX/functions/arn:aws:lambda:us-west-2:000000000000:function:name/invocations"
+        httpMethod: "POST"
+        type: "aws"
+    post:
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers: {}
+        404:
+          description: "404 response"
+          headers: {}
+        500:
+          description: "500 response"
+          headers: {}
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "$input.json('$.body')"
+          .*"status":404.*:
+            statusCode: "404"
+            responseTemplates:
+              application/json: "{\"error\":\"Not Found\"}"
+          .+:
+            statusCode: "500"
+            responseTemplates:
+              application/json: "{\"error\":\"Unknown\"}"
+        requestTemplates:
+          application/json: "{\n  \"stage\" : \"$context.stage\",\n  \"request-id\"\
+            \ : \"$context.requestId\",\n  \"api-id\" : \"$context.apiId\",\n  \"\
+            resource-path\" : \"$context.resourcePath\",\n  \"resource-id\" : \"$context.resourceId\"\
+            ,\n  \"path\" : \"$input.params().path\",\n  \"http-method\" : \"$context.httpMethod\"\
+            ,\n  \"source-ip\" : \"$context.identity.sourceIp\",\n  \"user-agent\"\
+            \ : \"$context.identity.userAgent\",\n  \"account-id\" : \"$context.identity.accountId\"\
+            ,\n  \"api-key\" : \"$context.identity.apiKey\",\n  \"caller\" : \"$context.identity.caller\"\
+            ,\n  \"user\" : \"$context.identity.user\",\n  \"user-arn\" : \"$context.identity.userArn\"\
+            ,\n  \"query-string\": {\n    #foreach($querystring in $input.params().querystring.keySet())\n\
+            \      \"$querystring\": \"$util.escapeJavaScript($input.params().querystring.get($querystring))\"\
+            \ #if($foreach.hasNext),#end\n    #end\n  },\n  \"headers\": {\n    #foreach($header\
+            \ in $input.params().header.keySet())\n      \"$header\": \"$util.escapeJavaScript($input.params().header.get($header))\"\
+            \ #if($foreach.hasNext),#end\n    #end\n  },\n  \"body\" : $input.json('$')\n\
+            }"
+        uri: "arn:aws:apigateway:region:lambda:path/XXXX-XX-XX/functions/arn:aws:lambda:us-west-2:000000000000:function:name/invocations"
+        httpMethod: "POST"
+        type: "aws"
+  /boom:
+    get:
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers: {}
+        404:
+          description: "404 response"
+          headers: {}
+        500:
+          description: "500 response"
+          headers: {}
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "$input.json('$.body')"
+          .*"status":404.*:
+            statusCode: "404"
+            responseTemplates:
+              application/json: "{\"error\":\"Not Found\"}"
+          .+:
+            statusCode: "500"
+            responseTemplates:
+              application/json: "{\"error\":\"Unknown\"}"
+        requestTemplates:
+          application/json: "{\n  \"stage\" : \"$context.stage\",\n  \"request-id\"\
+            \ : \"$context.requestId\",\n  \"api-id\" : \"$context.apiId\",\n  \"\
+            resource-path\" : \"$context.resourcePath\",\n  \"resource-id\" : \"$context.resourceId\"\
+            ,\n  \"path\" : \"$input.params().path\",\n  \"http-method\" : \"$context.httpMethod\"\
+            ,\n  \"source-ip\" : \"$context.identity.sourceIp\",\n  \"user-agent\"\
+            \ : \"$context.identity.userAgent\",\n  \"account-id\" : \"$context.identity.accountId\"\
+            ,\n  \"api-key\" : \"$context.identity.apiKey\",\n  \"caller\" : \"$context.identity.caller\"\
+            ,\n  \"user\" : \"$context.identity.user\",\n  \"user-arn\" : \"$context.identity.userArn\"\
+            ,\n  \"query-string\": {\n    #foreach($querystring in $input.params().querystring.keySet())\n\
+            \      \"$querystring\": \"$util.escapeJavaScript($input.params().querystring.get($querystring))\"\
+            \ #if($foreach.hasNext),#end\n    #end\n  },\n  \"headers\": {\n    #foreach($header\
+            \ in $input.params().header.keySet())\n      \"$header\": \"$util.escapeJavaScript($input.params().header.get($header))\"\
+            \ #if($foreach.hasNext),#end\n    #end\n  },\n  \"body\" : $input.json('$')\n\
+            }"
+        uri: "arn:aws:apigateway:region:lambda:path/XXXX-XX-XX/functions/arn:aws:lambda:us-west-2:000000000000:function:name/invocations"
+        httpMethod: "POST"
+        type: "aws"
+  /not-found:
+    get:
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers: {}
+        404:
+          description: "404 response"
+          headers: {}
+        500:
+          description: "500 response"
+          headers: {}
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseTemplates:
+              application/json: "$input.json('$.body')"
+          .*"status":404.*:
+            statusCode: "404"
+            responseTemplates:
+              application/json: "{\"error\":\"Not Found\"}"
+          .+:
+            statusCode: "500"
+            responseTemplates:
+              application/json: "{\"error\":\"Unknown\"}"
+        requestTemplates:
+          application/json: "{\n  \"stage\" : \"$context.stage\",\n  \"request-id\"\
+            \ : \"$context.requestId\",\n  \"api-id\" : \"$context.apiId\",\n  \"\
+            resource-path\" : \"$context.resourcePath\",\n  \"resource-id\" : \"$context.resourceId\"\
+            ,\n  \"path\" : \"$input.params().path\",\n  \"http-method\" : \"$context.httpMethod\"\
+            ,\n  \"source-ip\" : \"$context.identity.sourceIp\",\n  \"user-agent\"\
+            \ : \"$context.identity.userAgent\",\n  \"account-id\" : \"$context.identity.accountId\"\
+            ,\n  \"api-key\" : \"$context.identity.apiKey\",\n  \"caller\" : \"$context.identity.caller\"\
+            ,\n  \"user\" : \"$context.identity.user\",\n  \"user-arn\" : \"$context.identity.userArn\"\
+            ,\n  \"query-string\": {\n    #foreach($querystring in $input.params().querystring.keySet())\n\
+            \      \"$querystring\": \"$util.escapeJavaScript($input.params().querystring.get($querystring))\"\
+            \ #if($foreach.hasNext),#end\n    #end\n  },\n  \"headers\": {\n    #foreach($header\
+            \ in $input.params().header.keySet())\n      \"$header\": \"$util.escapeJavaScript($input.params().header.get($header))\"\
+            \ #if($foreach.hasNext),#end\n    #end\n  },\n  \"body\" : $input.json('$')\n\
+            }"
+        uri: "arn:aws:apigateway:region:lambda:path/XXXX-XX-XX/functions/arn:aws:lambda:us-west-2:000000000000:function:name/invocations"
+        httpMethod: "POST"
+        type: "aws"
