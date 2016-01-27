@@ -13,4 +13,4 @@
                  ;; [ring/ring-core "1.4.0"]
                  [org.eclipse.jetty/jetty-server "8.1.16.v20140903"]
                  [ring/ring-json "0.4.0"]
-                 [ring-aws-lambda-adapter "0.1.0-SNAPSHOT"]])
+                 [ring-aws-lambda-adapter "0.1.0"]])
