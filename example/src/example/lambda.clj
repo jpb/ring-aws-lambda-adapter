@@ -16,12 +16,18 @@
 
   (POST "/" {params :params}
     (let [name (get params :name "World")]
-      (throw (Exception. "boom!"))
       (-> (r/response {:message (format "Hello, %s" name)})
-          (r/header "Name" name))))
+          (r/header "Name" name)
+          (r/status 204))))
 
   (GET "/boom" {params :params}
     (throw (Exception. "boom!")))
+
+  (PUT "/a/:b/:c/:d" {uri :uri}
+    (r/response {:uri uri}))
+
+  (GET "/a/:b/:c/:d" {uri :uri}
+    (r/response {:uri uri}))
 
   (route/not-found "{\"error\":\"Not found\"}"))
 

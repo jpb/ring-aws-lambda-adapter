@@ -8,6 +8,14 @@
   (:import [java.io InputStream File]
            [clojure.lang ISeq]))
 
+(defn interpolate-path [params path]
+  (reduce (fn -interpolate-path [acc [key value]]
+            (str/replace acc
+                         (re-pattern (format "\\{%s\\}" (name key)))
+                         value))
+          path
+          params))
+
 (defn event->request
   "Transform lambda input to Ring requests. Has two extra properties:
    :event - the lambda input
@@ -26,7 +34,8 @@
                          io/input-stream)
      :server-name    host
      :remote-addr    (get event :source-ip "")
-     :uri            (get event :resource-path "")
+     :uri            (interpolate-path (get event :path {})
+                                       (get event :resource-path ""))
      :query-string   (codec/form-encode (get event :query-string {}))
      :scheme         (keyword
                       (get-in event [:headers :X-Forwarded-Proto]))
@@ -55,7 +64,8 @@
   (wrap-body [body] body))
 
 (defn maybe-decode-json [json]
-  (try (json/read-str json)
+  (try
+    (json/read-str json)
        (catch Exception e
          json)))
 
@@ -63,8 +73,7 @@
   (if (map? response)
     (update-in response
                [:body]
-               (comp wrap-body
-                     maybe-decode-json))
+               (comp maybe-decode-json wrap-body))
     response))
 
 (defn handle-request

@@ -68,7 +68,12 @@ See `example/` for a code example and Swagger definition.
              "api-id" : "$context.apiId",
              "resource-path" : "$context.resourcePath",
              "resource-id" : "$context.resourceId",
-             "path" : "$input.params().path",
+             "path": {
+               #foreach($path in $input.params().path.keySet())
+                 "$path": "$util.escapeJavaScript($input.params().path.get($path))" #if($foreach.hasNext),
+                 #end
+               #end
+             },
              "http-method" : "$context.httpMethod",
              "source-ip" : "$context.identity.sourceIp",
              "user-agent" : "$context.identity.userAgent",

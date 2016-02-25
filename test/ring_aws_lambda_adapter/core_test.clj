@@ -7,13 +7,14 @@
 
 (deftest handle-request-test
   (testing "response body types"
-    (doseq [response-body ["foo"
-                           (io/input-stream (.getBytes "foo"))
-                           (list "foo")
+    (doseq [response-body ["\"response body\""
+                           (io/input-stream (.getBytes "\"response body\""))
+                           (list "\"response body\"")
                            (doto (File/createTempFile (str gensym)
                                                       ".tmp")
                              (.deleteOnExit)
-                             (spit "foo"))]]
+                             (spit "\"response body\""))
+                           ]]
       (let [request (atom nil)
             options {}
             event {:headers
@@ -22,12 +23,12 @@
                     :X-Forwarded-Port "80"}
                    :source-ip "1.2.3.4"
                    :resource-path "/"
-                   :query-string "?a=b"
+                   :query-string {:a "b"}
                    :http-method "GET"
                    :body "foo"}
             in (io/input-stream (.getBytes (json/write-str event)))
             out (ByteArrayOutputStream.)
-            ctx nil]
+            context nil]
         (core/handle-request (fn [-request]
                                (reset! request -request)
                                {:status 200
@@ -36,10 +37,10 @@
                              options
                              in
                              out
-                             ctx)
+                             context)
         ;; Request
         (is (= (slurp (:body @request))
-               "foo"))
+               "\"foo\""))
         (is (= (dissoc @request :body)
                {:protocol           "HTTP/1.1",
                 :remote-addr        "1.2.3.4",
@@ -50,12 +51,17 @@
                 :event              event,
                 :uri                "/",
                 :server-name        "example.com",
-                :ctx                nil,
-                :query-string       "?a=b",
+                :context                nil,
+                :query-string       "a=b",
                 :scheme             :http,
                 :request-method     :get}))
         ;; Response
         (is (= (json/read-str (String. (.toByteArray out)))
-               {"body" "foo"
+               {"body" "response body"
                 "status" 200
                 "headers" {}}))))))
+
+(deftest interpolate-path-test
+  (is (= "/path/a/b"
+         (core/interpolate-path {:first "a" :second "b"}
+                                "/path/{first}/{second}"))))
