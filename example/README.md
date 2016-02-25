@@ -1,5 +1,15 @@
 # Ring AWS Lambda API Gateway Example
 
+## Deployment
+
+```
+git submodule init
+pushd aws-apigateway-importer
+mvn assembly:assembly
+popd
+bin/deploy <AWS ACCOUNT ID> us-west-2 ring-aws-lambda-adapter-example
+```
+
 ## Development
 
 ```

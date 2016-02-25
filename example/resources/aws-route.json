@@ -1,0 +1,46 @@
+{
+    "auth": {
+        "type": "none"
+    },
+    "integration": {
+        "type" : "aws",
+        "uri" : "arn:aws:apigateway:%s:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:%s:function:%s/invocations",
+        "httpMethod" : "POST",
+        "requestTemplates" : {
+            "application/json" : "{\"stage\" : \"$context.stage\", \"request-id\" : \"$context.requestId\", \"api-id\" : \"$context.apiId\", \"resource-path\" : \"$context.resourcePath\", \"resource-id\" : \"$context.resourceId\", \"path\": {#foreach($path in $input.params().path.keySet()) \"$path\": \"$util.escapeJavaScript($input.params().path.get($path))\" #if($foreach.hasNext), #end #end}, \"http-method\" : \"$context.httpMethod\", \"source-ip\" : \"$context.identity.sourceIp\", \"user-agent\" : \"$context.identity.userAgent\", \"account-id\" : \"$context.identity.accountId\", \"api-key\" : \"$context.identity.apiKey\", \"caller\" : \"$context.identity.caller\", \"user\" : \"$context.identity.user\", \"user-arn\" : \"$context.identity.userArn\", \"query-string\": {#foreach($querystring in $input.params().querystring.keySet()) \"$querystring\": \"$util.escapeJavaScript($input.params().querystring.get($querystring))\" #if($foreach.hasNext), #end #end}, \"headers\": {#foreach($header in $input.params().header.keySet()) \"$header\": \"$util.escapeJavaScript($input.params().header.get($header))\" #if($foreach.hasNext), #end #end}, \"body\" : $input.json('$')}"
+        },
+        "requestParameters" : {},
+        "cacheNamespace" : "cache-namespace",
+        "cacheKeyParameters" : [],
+        "responses" : {
+            ".*\"status\":400.*" : {
+                "statusCode" : "400",
+                "responseParameters" : {},
+                "responseTemplates" : {
+                    "application/json" : "{\"error\":\"There was an error with the provided input\"}"
+                }
+            },
+            ".*\"status\":404.*" : {
+                "statusCode" : "404",
+                "responseParameters" : {},
+                "responseTemplates" : {
+                    "application/json" : "{\"error\":\"Not found\"}"
+                }
+            },
+            ".+" : {
+                "statusCode" : "500",
+                "responseParameters" : {},
+                "responseTemplates" : {
+                    "application/json" : "{\"error\":\"Unknown\"}"
+                }
+            },
+            "default" : {
+                "statusCode" : "200",
+                "responseParameters" : {},
+                "responseTemplates" : {
+                    "application/json" : "$input.json('$.body')"
+                }
+            }
+        }
+    }
+}

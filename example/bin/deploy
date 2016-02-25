@@ -1,0 +1,52 @@
+#!/bin/bash -ex
+
+CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+ACCOUNT_ID="${1}"
+REGION="${2}"
+LAMBDA_NAME="${3}"
+PROFILE="${LAMBDA_NAME}-${REGION}"
+
+pushd $CURRENT_DIR/..
+  lein do clean, uberjar
+  lein run -m example.api-gateway-config "${ACCOUNT_ID}" "${REGION}" "${LAMBDA_NAME}" > resources/aws.json
+
+  FILENAME=$(ls target | grep standalone)
+
+  GET_FUNCTION=$(aws --region "${REGION}" lambda get-function --function-name "${LAMBDA_NAME}" 2>&1 || true)
+
+  if [[ "${GET_FUNCTION}" == *"NotFound"* ]]; then
+      aws lambda create-function \
+          --region "${REGION}" \
+          --function-name "${LAMBDA_NAME}" \
+          --zip-file "fileb://$(pwd)/target/${FILENAME}" \
+          --role arn:aws:iam::002682819933:role/lambda_basic_execution \
+          --handler example.lambda.MyLambdaFn \
+          --runtime java8 \
+          --timeout 15 \
+          --memory-size 512
+  else
+      aws lambda update-function-code \
+          --region "${REGION}" \
+          --function-name "${LAMBDA_NAME}" \
+          --zip-file "fileb://$(pwd)/target/${FILENAME}"
+  fi
+
+  # TODO use instead of submodule when newer version is released
+  # lein run -m com.amazonaws.service.apigateway.importer.ApiImporterMain \
+  aws-apigateway-importer/aws-api-import.sh \
+      --region "${REGION}" \
+      --create resources/example.raml \
+      --raml-config resources/aws.json | tee aws-apigateway-importer-output
+
+  API_ID=$(cat aws-apigateway-importer-output | grep 'Created API' | sed -e 's/.*Created API \(.*\)$/\1/')
+
+  aws --region "${REGION}" lambda add-permission \
+      --function-name "${LAMBDA_NAME}" \
+      --statement-id "allow-api-gateway-${API_ID}" \
+      --action lambda:InvokeFunction \
+      --principal apigateway.amazonaws.com \
+      --source-arn "arn:aws:execute-api:${REGION}:${ACCOUNT_ID}:${API_ID}/*"
+
+  rm resources/aws.json aws-apigateway-importer-output
+popd

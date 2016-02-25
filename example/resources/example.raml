@@ -1,0 +1,55 @@
+#%RAML 0.8
+
+title: ring-aws-lambda-adapter-example
+version: v1
+baseUri: http://example.com/
+mediaType: application/json
+traits:
+  - errorable:
+      responses:
+        400:
+          body:
+            application/json:
+        404:
+          body:
+            application/json:
+        500:
+          body:
+            application/json:
+
+/:
+  get:
+    is: [ errorable ]
+    responses:
+      200:
+        body:
+          application/json:
+  post:
+    is: [ errorable ]
+    responses:
+      204:
+        body:
+          application/json:
+/boom:
+  get:
+    is: [ errorable ]
+    responses:
+      200:
+        body:
+          application/json:
+/a:
+  /{b}:
+    /{c}:
+      /{d}:
+        get:
+          is: [ errorable ]
+          responses:
+            200:
+              body:
+                application/json:
+        put:
+          is: [ errorable ]
+          responses:
+            200:
+              body:
+                application/json:
