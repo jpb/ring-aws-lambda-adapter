@@ -1,4 +1,4 @@
-(defproject ring-aws-lambda-adapter "0.1.1-SNAPSHOT"
+(defproject ring-aws-lambda-adapter "0.1.1"
   :description "A ring adapater for use with AWS Lambda and AWS API Gateway"
   :url "https://github.com/jpb/ring-aws-lambda-adapter"
   :license {:name "Eclipse Public License"
