@@ -78,7 +78,7 @@
 
 (defn handle-request
   "Handle a lambda invocation as a ring request. Writes ring response as JSON to
-  `out` for 200 responses, rases an exception with ring response as JSON for
+  `out` for 200 responses, raises an exception with ring response as JSON for
   non-200 responses"
   [handler options in out context]
   (let [event (json/read (io/reader in)
