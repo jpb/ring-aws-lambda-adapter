@@ -28,19 +28,14 @@
      (try
        (Integer/parseInt (get-in event [:headers :X-Forwarded-Port]))
        (catch NumberFormatException e nil))
-     :body           (-> (get event :body {})
-                         json/write-str
-                         (.getBytes)
-                         io/input-stream)
+     :body           (get event :body)
      :server-name    host
-     :remote-addr    (get event :source-ip "")
-     :uri            (interpolate-path (get event :path {})
-                                       (get event :resource-path ""))
-     :query-string   (codec/form-encode (get event :query-string {}))
+     :uri            (get event :path "/")
+     :query-params   (get event :queryStringParameters {})
      :scheme         (keyword
                       (get-in event [:headers :X-Forwarded-Proto]))
      :request-method (keyword
-                      (str/lower-case (get event :http-method "")))
+                      (str/lower-case (get event :httpMethod "")))
      :protocol       (format "HTTP/%s" http-version)
      :headers        (into {} (map (fn -header-keys [[k v]]
                                      [(str/lower-case (name k)) v])
@@ -82,7 +77,7 @@
   non-200 responses"
   [handler options in out context]
   (let [event (json/read (io/reader in)
-                          :key-fn keyword)
+                         :key-fn keyword)
         request (event->request event context)
         response (-> request
                      handler
