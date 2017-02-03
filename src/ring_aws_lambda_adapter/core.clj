@@ -81,11 +81,13 @@
         request (event->request event context)
         response (-> request
                      handler
-                     wrap-response)]
-    (if (= (:status response) 200)
-      (with-open [w (io/writer out)]
-        (json/write response w))
-      (throw (Exception. (json/write-str response))))))
+                     wrap-response)
+        status (:status response)
+        formatted (-> response
+                      (assoc :statusCode status)
+                      (dissoc :status))]
+    (with-open [w (io/writer out)]
+      (json/write formatted w))))
 
 (defmacro defhandler
   "A ring handler for AWS Lambda and AWS API Gateway"
