@@ -20,7 +20,7 @@ pushd $CURRENT_DIR/..
           --region "${REGION}" \
           --function-name "${LAMBDA_NAME}" \
           --zip-file "fileb://$(pwd)/target/${FILENAME}" \
-          --role arn:aws:iam::002682819933:role/lambda_basic_execution \
+          --role "arn:aws:iam::${ACCOUNT_ID}:role/lambda_basic_execution" \
           --handler example.lambda.MyLambdaFn \
           --runtime java8 \
           --timeout 15 \
